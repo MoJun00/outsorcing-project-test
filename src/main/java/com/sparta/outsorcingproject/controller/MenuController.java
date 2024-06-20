@@ -1,6 +1,5 @@
 package com.sparta.outsorcingproject.controller;
 
-import com.oracle.svm.core.annotate.Delete;
 import com.sparta.outsorcingproject.dto.MenuRequestDto;
 import com.sparta.outsorcingproject.dto.MenuResponseDto;
 import com.sparta.outsorcingproject.service.MenuService;
@@ -9,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
