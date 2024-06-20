@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/store")
 public class MenuController {
+
     private final MenuService menuService;
 
     @PostMapping("/{storeId}/menu")
