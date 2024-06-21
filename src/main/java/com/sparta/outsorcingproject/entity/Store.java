@@ -1,5 +1,6 @@
 package com.sparta.outsorcingproject.entity;
 
+import com.sparta.outsorcingproject.dto.StoreRequestDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,13 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import java.awt.Menu;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Store {
 
     @Id
@@ -32,14 +34,26 @@ public class Store {
     private String storeIntroducing;
 
 
-//    @OneToOne
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
-//
-//    @OneToMany(mappedBy = "store",cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Menu> Menus = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "store",cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Review> reviews = new ArrayList<>();
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
+    @OneToMany(mappedBy = "store",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Menu> Menus = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
+
+    public Store(User user, StoreRequestDto requestDto) {
+        this.user = user;
+        this.sellerName = user.getUsername();
+        this.storeName = requestDto.getStoreName();
+        this.storeIntroducing = requestDto.getStoreIntroducing();
+    }
+
+
+    public void update(StoreRequestDto requestDto) {
+        this.storeName = requestDto.getStoreName();
+        this.storeIntroducing = requestDto.getStoreIntroducing();
+    }
 }
