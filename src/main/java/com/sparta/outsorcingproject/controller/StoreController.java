@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("store")
+@RequestMapping("/store")
 @RequiredArgsConstructor
 public class StoreController {
 
@@ -43,13 +43,13 @@ public class StoreController {
     }
 
     // 가게 단일 조회
-    @GetMapping("/{storeId")
+    @GetMapping("/{storeId}")
     public ResponseEntity<StoreResponseDto> findOne(@PathVariable Long storeId){
         return storeService.findOne(storeId);
     }
 
     // 가게 수정
-    @PutMapping("{storeId}")
+    @PutMapping("/{storeId}")
     public ResponseEntity<String> updateStore(
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid StoreRequestDto storeRequestDto,
@@ -58,7 +58,7 @@ public class StoreController {
         return storeService.updateStore(userDetails, storeRequestDto, storeId);
     }
 
-    @DeleteMapping("{storeId}")
+    @DeleteMapping("/{storeId}")
     public ResponseEntity<String> deleteStore(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long storeId){
