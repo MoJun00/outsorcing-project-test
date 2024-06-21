@@ -52,7 +52,7 @@ public class StoreController {
     @PutMapping("/{storeId}")
     public ResponseEntity<String> updateStore(
             @AuthenticationPrincipal UserDetails userDetails,
-            @Valid StoreRequestDto storeRequestDto,
+            @Valid @RequestBody StoreRequestDto storeRequestDto,
             @PathVariable Long storeId
     ){
         return storeService.updateStore(userDetails, storeRequestDto, storeId);

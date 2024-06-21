@@ -6,6 +6,8 @@ import lombok.Getter;
 
 @Getter
 public class MenuResponseDto {
+    private long id;
+
     private String name;
 
     private long price;
@@ -13,8 +15,9 @@ public class MenuResponseDto {
     private String description;
 
     public MenuResponseDto(Menu menu) {
-        name = menu.getName();
-        price = menu.getPrice();
-        description = menu.getDescription();
+        this.id = menu.getId();
+        this.name = menu.getName();
+        this.price = menu.getPrice();
+        this.description = menu.getDescription();
     }
 }

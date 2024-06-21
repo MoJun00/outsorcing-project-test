@@ -4,8 +4,10 @@ import com.sparta.outsorcingproject.dto.MenuRequestDto;
 import com.sparta.outsorcingproject.dto.MenuResponseDto;
 import com.sparta.outsorcingproject.entity.Menu;
 import com.sparta.outsorcingproject.entity.Store;
+import com.sparta.outsorcingproject.entity.User;
 import com.sparta.outsorcingproject.repository.MenuRepository;
 import com.sparta.outsorcingproject.repository.StoreRepository;
+import com.sparta.outsorcingproject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -22,12 +24,8 @@ public class MenuService {
     private final MessageSource messageSource;
 
     @Transactional
-    public String createMenu(long storeId, MenuRequestDto requestDto) {
-        // 나중에 권한 확인해서 오더가 맞는지, 스토어 소유주 맞는지
-
-        Store store = storeRepository.findStoreById(storeId,messageSource);
-        //Store store = storeRepository.findById(storeId).orElseThrow(
-        //        ()->new IllegalArgumentException(messageSource.getMessage("not.find.store",null, Locale.getDefault())));
+    public String createMenu(long storeId, MenuRequestDto requestDto, UserDetailsImpl userDetails) {
+        Store store = getStore(storeId,messageSource,userDetails);
 
         Menu menu = Menu.builder()
                 .name(requestDto.getName())
@@ -49,9 +47,14 @@ public class MenuService {
     }
 
     @Transactional
-    public String updateMenu(long storeId, long menuId, MenuRequestDto requestDto) {
-        Store store = storeRepository.findStoreById(storeId,messageSource);
+    public String updateMenu(long storeId, long menuId, MenuRequestDto requestDto, UserDetailsImpl userDetails) {
+        Store store = getStore(storeId,messageSource,userDetails);
+
         Menu menu = menuRepository.findMenuById(menuId,messageSource);
+
+        if(menu.getStore().getId() != storeId){
+            throw new IllegalArgumentException("("+menu.getStore().getStoreName() +") 에서 가지고 있는 메뉴가 아닙니다.");
+        }
 
         menu.update(requestDto);
 
@@ -59,9 +62,15 @@ public class MenuService {
     }
 
     @Transactional
-    public String deleteMenu(long storeId, long menuId) {
-        Store store = storeRepository.findStoreById(storeId,messageSource);
+    public String deleteMenu(long storeId, long menuId, UserDetailsImpl userDetails) {
+        Store store = getStore(storeId,messageSource,userDetails);
+
         Menu menu = menuRepository.findMenuById(menuId,messageSource);
+
+        if(menu.getStore().getId() != storeId){
+            throw new IllegalArgumentException("("+menu.getStore().getStoreName() +") 에서 가지고 있는 메뉴가 아닙니다.");
+        }
+
         String str = menu.getName() + " 메뉴 삭제 완료";
         menuRepository.delete(menu);
         return str;
@@ -75,5 +84,14 @@ public class MenuService {
         List<MenuResponseDto> menusDto = menus.stream().map(MenuResponseDto::new).collect(Collectors.toList());
 
         return menusDto;
+    }
+
+    private Store getStore(long storeId, MessageSource messageSource,UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+        Store store = storeRepository.findStoreById(storeId,user.getId(),messageSource); // 존재하지 않는 가게 + 유저가 가게의 소유주가 아닌 경우 오류
+        //Store store = storeRepository.findById(storeId).orElseThrow(
+        //        ()->new IllegalArgumentException(messageSource.getMessage("not.find.store",null, Locale.getDefault())));
+
+        return store;
     }
 }

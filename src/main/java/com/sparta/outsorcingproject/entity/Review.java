@@ -31,8 +31,6 @@ public class Review extends Timestamped {
     private String review;
     private Double rate;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
 
     public Review(User user, Orders orders, Store store, String review, Double rate) {
         this.user = user;
@@ -40,13 +38,11 @@ public class Review extends Timestamped {
         this.store = store;
         this.review = review;
         this.rate = rate;
-        this.createdAt = LocalDateTime.now();
     }
 
     public void updateReview(String review, Double rate) {
         this.review = review;
         this.rate = rate;
-        this.modifiedAt = LocalDateTime.now();
     }
 
 }
