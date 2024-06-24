@@ -2,17 +2,13 @@ package com.sparta.outsorcingproject.controller;
 
 import com.sparta.outsorcingproject.dto.StoreRequestDto;
 import com.sparta.outsorcingproject.dto.StoreResponseDto;
-import com.sparta.outsorcingproject.entity.User;
 import com.sparta.outsorcingproject.security.UserDetailsImpl;
 import com.sparta.outsorcingproject.service.StoreService;
 import jakarta.validation.Valid;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
