@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class OrdersMenu extends Timestamped {
+public class OrdersMenu {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

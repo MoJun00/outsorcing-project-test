@@ -1,5 +1,7 @@
 package com.sparta.outsorcingproject.controller;
 
+import com.sparta.outsorcingproject.dto.AdminSignupRequestDto;
+import com.sparta.outsorcingproject.dto.SignupReponseDto;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,22 +28,25 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
+    @PostMapping("/user/admin")
+    public ResponseEntity<SignupReponseDto> adminSignup(@RequestBody @Valid AdminSignupRequestDto requestDto) {
+
+        return userService.adminSignup(requestDto);
+
+    }
 
     @PostMapping("/user/signup")
-    public String signup(@RequestBody @Valid SignupRequestDto requestDto) {
-        userService.signup(requestDto);
+    public ResponseEntity<SignupReponseDto> signup(@RequestBody @Valid SignupRequestDto requestDto) {
 
-        return "회원가입 완료";
+       return userService.signup(requestDto);
+
     }
 
     @PostMapping("/user/login")
-    public String login(LoginRequestDto requestDto, HttpServletResponse res) {
-        try {
-            userService.login(requestDto, res);
-        } catch (Exception e) {
-            return "redirect:/api/user/login-page?error";
-        }
-        return "로그인 완료";
+    public ResponseEntity<String> login(LoginRequestDto requestDto, HttpServletResponse res) {
+
+           return userService.login(requestDto, res);
+
     }
 
     @PostMapping("/user/logout")
@@ -65,20 +70,21 @@ public class UserController {
     }
 
     @PostMapping("/user/refresh")
-    public String refresh(@RequestHeader("RefreshToken") String refreshToken) {
+    public ResponseEntity<String> refresh(@RequestHeader("RefreshToken") String refreshToken) {
         if (jwtUtil.validateToken(refreshToken)) {
             String username = jwtUtil.getUserInfoFromToken(refreshToken).getSubject();
-            return jwtUtil.createAccessToken(username, userService.getUserByUsername(username).getRole());
+            return ResponseEntity.ok(jwtUtil.createAccessToken(username, userService.getUserByUsername(username).getRole()));
         } else {
             throw new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다.");
         }
     }
 
     @DeleteMapping("/user/delete")
-    public String userDelete(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<String> userDelete(@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestParam String password) {
+
         User user = userDetails.getUser();
-        userService.deleteById(user.getId());
+
+        return userService.deleteById(user.getId(),password);
         //jwt토큰을 헤더에 넣어서 테스트
-        return "회원탈퇴 완료";
     }
 }

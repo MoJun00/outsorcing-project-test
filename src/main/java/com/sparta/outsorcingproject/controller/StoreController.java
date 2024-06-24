@@ -3,8 +3,11 @@ package com.sparta.outsorcingproject.controller;
 import com.sparta.outsorcingproject.dto.StoreRequestDto;
 import com.sparta.outsorcingproject.dto.StoreResponseDto;
 import com.sparta.outsorcingproject.entity.User;
+import com.sparta.outsorcingproject.security.UserDetailsImpl;
 import com.sparta.outsorcingproject.service.StoreService;
 import jakarta.validation.Valid;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +30,12 @@ public class StoreController {
     private final StoreService storeService;
 
     // 가게 등록
-    // UserDetails 구현 후 사용
     @PostMapping
     public ResponseEntity<String> createStore(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestBody StoreRequestDto requestDto
     ){
-        return storeService.createStore(userDetails, requestDto);
+        return storeService.createStore(userDetails.getUser(), requestDto);
     }
 
     // 가게 전체 조회
@@ -51,18 +53,18 @@ public class StoreController {
     // 가게 수정
     @PutMapping("/{storeId}")
     public ResponseEntity<String> updateStore(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestBody StoreRequestDto storeRequestDto,
             @PathVariable Long storeId
     ){
-        return storeService.updateStore(userDetails, storeRequestDto, storeId);
+        return storeService.updateStore(userDetails.getUser(), storeRequestDto, storeId);
     }
 
     @DeleteMapping("/{storeId}")
     public ResponseEntity<String> deleteStore(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long storeId){
-        return storeService.deleteStore(userDetails, storeId);
+        return storeService.deleteStore(userDetails.getUser(), storeId);
     }
 
 }

@@ -1,12 +1,11 @@
 package com.sparta.outsorcingproject.entity;
 
+import com.sparta.outsorcingproject.dto.ProfileModifyRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -44,6 +43,12 @@ public class User extends Timestamped {
         this.password = password;
         this.introduce = introduce;
         this.role = role;
+    }
+
+    public void update(String username,String password,String introduce) {
+            this.username = username;
+            this.password = password;
+            this.introduce = introduce;
     }
 
 }

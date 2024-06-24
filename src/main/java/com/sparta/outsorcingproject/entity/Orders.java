@@ -3,8 +3,6 @@ package com.sparta.outsorcingproject.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sparta.outsorcingproject.dto.OrdersRequestDto;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -37,6 +36,7 @@ public class Orders extends Timestamped {
 	@OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrdersMenu> ordersMenu = new ArrayList<>();
 
+	@Setter
 	private long totalPrice;
 
 	public Orders(User user, Store store) {
@@ -45,12 +45,7 @@ public class Orders extends Timestamped {
 	}
 
 	public void addOrdersMenu(OrdersMenu ordersMenu) {
-		this.ordersMenu.clear();
 		this.ordersMenu.add(ordersMenu);
 		ordersMenu.addOrders(this);
-	}
-
-	public void setTotalPrice(long totalPrice) {
-		this.totalPrice = totalPrice;
 	}
 }
