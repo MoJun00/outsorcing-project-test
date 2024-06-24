@@ -31,7 +31,7 @@ public class OrdersMenu {
 
 	private long quantity;
 
-	public OrdersMenu(OrdersMenuRequestDto ordersMenuDto, Orders orders, Menu menu, long totalPrice) {
+	public OrdersMenu(OrdersMenuRequestDto ordersMenuDto, Orders orders, Menu menu) {
 		this.menu = menu;
 		this.quantity = ordersMenuDto.getQuantity();
 		this.orders = orders;

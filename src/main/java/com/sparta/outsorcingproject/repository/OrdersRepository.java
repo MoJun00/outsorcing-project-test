@@ -12,5 +12,5 @@ import com.sparta.outsorcingproject.entity.User;
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
 	Page<Orders> findAllByOrderByCreatedAtDesc(PageRequest pageRequest);
 
-	List<Orders> findAllByUser(User follower);
+	List<Orders> findAllByUserOrderByCreatedAtDesc(User follower);
 }

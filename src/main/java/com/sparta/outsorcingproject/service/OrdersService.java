@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sparta.outsorcingproject.dto.OrdersMenuRequestDto;
 import com.sparta.outsorcingproject.dto.OrdersRequestDto;
 import com.sparta.outsorcingproject.dto.OrdersResponseDto;
-import com.sparta.outsorcingproject.entity.Follower;
 import com.sparta.outsorcingproject.entity.Menu;
 import com.sparta.outsorcingproject.entity.Orders;
 import com.sparta.outsorcingproject.entity.OrdersMenu;
@@ -131,7 +130,7 @@ public class OrdersService {
 			totalPrice += menu.getPrice() * ordersMenuDto.getQuantity();
 
 			OrdersMenu ordersMenu = ordersMenuRepository.save(
-				new OrdersMenu(ordersMenuDto, savedOrders, menu, totalPrice));
+				new OrdersMenu(ordersMenuDto, savedOrders, menu));
 			savedOrders.setTotalPrice(totalPrice);
 			savedOrders.addOrdersMenu(ordersMenu);
 		}
@@ -152,7 +151,7 @@ public class OrdersService {
 
 		List<OrdersResponseDto> responseDtoList = new ArrayList<>();
 
-		List<Orders> followerOrdersList = ordersRepository.findAllByUser(follower);
+		List<Orders> followerOrdersList = ordersRepository.findAllByUserOrderByCreatedAtDesc(follower);
 
 		for (Orders orders : followerOrdersList) {
 			responseDtoList.add(new OrdersResponseDto(orders));
