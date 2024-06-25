@@ -74,7 +74,7 @@ public class StoreService {
         if (store == null) {
             throw new IllegalArgumentException("해당 글은 존재하지 않습니다.");
         }
-        if (!Objects.equals(user, store.getUser())) {
+        if (!Objects.equals(user.getId(), store.getUser().getId())) {
             throw new IllegalArgumentException("작성자만 수정 가능합니다.");
         }
 
@@ -91,7 +91,7 @@ public class StoreService {
             throw new IllegalArgumentException("해당 가게는 존재하지 않습니다.");
         }
 
-        if (!Objects.equals(user, store.getUser())) {
+        if (!Objects.equals(user.getId(), store.getUser().getId())) {
             throw new IllegalArgumentException("작성자만 삭제 할 수 있습니다.");
         }
 

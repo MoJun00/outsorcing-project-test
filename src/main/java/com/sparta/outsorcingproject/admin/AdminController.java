@@ -103,8 +103,8 @@ public class AdminController {
     //메뉴 삭제
     @DeleteMapping("/{storeId}/menu/{menuId}")
     public ResponseEntity<String> deleteMenu(@PathVariable long storeId, @PathVariable long menuId) {
-        String response = adminService.deleteMenu(storeId,menuId);
+        String str = adminService.deleteMenu(storeId,menuId);
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(str);
     }
 }
