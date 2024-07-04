@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +32,9 @@ public class Review extends Timestamped {
     private String review;
     private Double rate;
 
+    @ColumnDefault("0")
+    private Long likeCount;
+
 
     public Review(User user, Orders orders, Store store, String review, Double rate) {
         this.user = user;
@@ -45,4 +49,12 @@ public class Review extends Timestamped {
         this.rate = rate;
     }
 
+    // 좋아요 갱신
+    public void addLikeCount(){
+        this.likeCount++;
+    }
+
+    public void subLikeCount(){
+        this.likeCount--;
+    }
 }

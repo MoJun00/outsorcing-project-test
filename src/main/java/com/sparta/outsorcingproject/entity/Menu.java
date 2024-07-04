@@ -27,7 +27,8 @@ public class Menu {
     private Store store;
 
     @Builder
-    public Menu(String name, long price, String description,Store store) {
+    public Menu(long id, String name, long price, String description,Store store) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;

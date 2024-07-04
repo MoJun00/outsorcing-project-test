@@ -3,12 +3,15 @@ package com.sparta.outsorcingproject.service;
 import com.sparta.outsorcingproject.dto.MenuRequestDto;
 import com.sparta.outsorcingproject.dto.MenuResponseDto;
 import com.sparta.outsorcingproject.entity.Menu;
+import com.sparta.outsorcingproject.entity.OrdersMenu;
 import com.sparta.outsorcingproject.entity.Store;
 import com.sparta.outsorcingproject.entity.User;
 import com.sparta.outsorcingproject.repository.MenuRepository;
+import com.sparta.outsorcingproject.repository.OrdersMenuRepository;
 import com.sparta.outsorcingproject.repository.StoreRepository;
 import com.sparta.outsorcingproject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MenuService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
     private final MessageSource messageSource;
+
+    private final OrdersMenuRepository ordersMenuRepository;
 
     @Transactional
     public String createMenu(long storeId, MenuRequestDto requestDto, UserDetailsImpl userDetails) {
@@ -71,6 +77,14 @@ public class MenuService {
             throw new IllegalArgumentException("("+menu.getStore().getStoreName() +") 에서 가지고 있는 메뉴가 아닙니다.");
         }
 
+        /*
+        ///
+        List<OrdersMenu> ordersMenus = ordersMenuRepository.findAllByMenuId(menuId);
+        for (int i = 0; i < ordersMenus.size(); i++) {
+            ordersMenuRepository.delete(ordersMenus.get(i));
+        }
+        ///
+        */
         String str = menu.getName() + " 메뉴 삭제 완료";
         menuRepository.delete(menu);
         return str;

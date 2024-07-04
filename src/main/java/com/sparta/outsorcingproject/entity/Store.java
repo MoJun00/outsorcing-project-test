@@ -67,11 +67,11 @@ public class Store extends Timestamped{
     }
 
     // 좋아요 갱신
-    public void addCount(){
+    public void addLikeCount(){
         this.likeCount++;
     }
 
-    public void subtractCount(){
+    public void subLikeCount(){
         this.likeCount--;
     }
 }
