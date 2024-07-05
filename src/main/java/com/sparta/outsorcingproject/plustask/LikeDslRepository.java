@@ -75,6 +75,19 @@ public class LikeDslRepository extends CustomJPARepository {
                 .execute();
     }
 
+
+
+    public long findLikeCount(Long userId, LikeTypeEnum likeTypeEnum){
+        QLike qLike = QLike.like;
+
+        long likeCount = jqf.select(qLike.count())
+                    .from(qLike)
+                    .where(qLike.user.id.eq(userId).and(qLike.type.eq(likeTypeEnum)))
+                    .fetchOne();
+
+        return likeCount;
+    }
+
     /*public List<Like> selectPersonByNm(String firstNm, String lastNm){
         JPAQueryFactory jqf = new JPAQueryFactory(em);
         QLike person = QLike.like;

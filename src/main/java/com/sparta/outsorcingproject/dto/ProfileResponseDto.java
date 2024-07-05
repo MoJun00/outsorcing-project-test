@@ -15,9 +15,23 @@ public class ProfileResponseDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String profileUrl;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private long storeLikeCount;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private long reviewLikeCount;
+
     public ProfileResponseDto(User user) {
         this.username = user.getUsername();
         this.introduce = user.getIntroduce();
         this.profileUrl = user.getProfileUrl();
+    }
+
+    public ProfileResponseDto(User user,long storeLikeCount,long reviewLikeCount) {
+        this.username = user.getUsername();
+        this.introduce = user.getIntroduce();
+        this.profileUrl = user.getProfileUrl();
+        this.storeLikeCount = storeLikeCount;
+        this.reviewLikeCount = reviewLikeCount;
     }
 }

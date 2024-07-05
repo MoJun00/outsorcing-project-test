@@ -1,13 +1,15 @@
 package com.sparta.outsorcingproject.plustask;
 
-import com.sparta.outsorcingproject.dto.MenuResponseDto;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sparta.outsorcingproject.dto.ProfileRequestDto;
+import com.sparta.outsorcingproject.dto.ProfileResponseDto;
 import com.sparta.outsorcingproject.dto.ReviewResponseDto;
 import com.sparta.outsorcingproject.dto.StoreResponseDto;
 import com.sparta.outsorcingproject.entity.*;
 import com.sparta.outsorcingproject.repository.LikeRepository;
-import com.sparta.outsorcingproject.repository.OrdersRepository;
 import com.sparta.outsorcingproject.repository.ReviewRepository;
 import com.sparta.outsorcingproject.repository.StoreRepository;
+import com.sparta.outsorcingproject.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +18,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Service
@@ -88,7 +90,6 @@ public class LikeService {
         return "오류 발생";
     }
 
-    @Transactional
     public Page<StoreResponseDto> readLikeStore(int pageNumber, User user) {
         Pageable pageable = PageRequest.of(pageNumber, 5, Sort.by("createAt").ascending());
 
@@ -104,5 +105,21 @@ public class LikeService {
         Page<Like> likes = likeDslRepository.findAllByUserIdAndTypeId(pageable, user.getId(), LikeTypeEnum.Review);
 
         return likes.map(like -> new ReviewResponseDto(like.getReview()));
+    }
+
+
+    //프로필 좋아요한 스토어, 리뷰 수 조회 추가  / 유저에 count 넣어서 하는 방법도 있지만 쿼리로 추가해보기
+    private final UserRepository userRepository;
+
+    public ResponseEntity<ProfileResponseDto> showProfile(ProfileRequestDto requestDto) {
+        String username = requestDto.getUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "잘못된 접근입니다."));
+
+        long storeLikeCount = likeDslRepository.findLikeCount(user.getId(),LikeTypeEnum.Store);
+        long reviewLikeCount = likeDslRepository.findLikeCount(user.getId(),LikeTypeEnum.Review);
+
+        return ResponseEntity.ok(new ProfileResponseDto(user, storeLikeCount, reviewLikeCount));
     }
 }
