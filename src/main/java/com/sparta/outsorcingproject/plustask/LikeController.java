@@ -1,15 +1,18 @@
 package com.sparta.outsorcingproject.plustask;
 
+import com.sparta.outsorcingproject.dto.ReviewResponseDto;
+import com.sparta.outsorcingproject.dto.StoreResponseDto;
+import com.sparta.outsorcingproject.entity.Like;
 import com.sparta.outsorcingproject.entity.LikeTypeEnum;
 import com.sparta.outsorcingproject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,5 +33,19 @@ public class LikeController {
         String response = likeService.createLike(LikeTypeEnum.Review, reviewId,userDetails.getUser());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/store/read/{pageNumber}")
+    public ResponseEntity<Page<StoreResponseDto>> readLikeStore(@PathVariable int pageNumber, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Page<StoreResponseDto> response = likeService.readLikeStore(pageNumber, userDetails.getUser());
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/review/read/{pageNumber}")
+    public ResponseEntity<Page<ReviewResponseDto>> readLikeReview(@PathVariable int pageNumber, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Page<ReviewResponseDto> response = likeService.readLikeReview(pageNumber, userDetails.getUser());
+
+        return ResponseEntity.ok().body(response);
     }
 }

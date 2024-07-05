@@ -1,16 +1,27 @@
 package com.sparta.outsorcingproject.plustask;
 
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.outsorcingproject.entity.Like;
 import com.sparta.outsorcingproject.entity.LikeTypeEnum;
 import com.sparta.outsorcingproject.entity.QLike;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Slf4j
 @Repository
+@Transactional
+@RequiredArgsConstructor
 public class LikeDslRepository extends CustomJPARepository {
 
     public Like findByUserIdAndTypeId(Long userId, LikeTypeEnum likeTypeEnum, Long typeId){
-        JPAQueryFactory jqf = new JPAQueryFactory(em);
         QLike qLike = QLike.like;
 
         Like like = null;
@@ -27,6 +38,34 @@ public class LikeDslRepository extends CustomJPARepository {
 
         return like;
     }
+
+    public List<Like> findAllByUserIdAndTypeId(Long userId, LikeTypeEnum likeTypeEnum){
+        QLike qLike = QLike.like;
+
+        List<Like> likes = jqf.selectFrom(qLike)
+                .where(qLike.user.id.eq(userId).and(qLike.type.eq(likeTypeEnum)))
+                .fetch();
+
+        return likes;
+    }
+
+    public Page<Like> findAllByUserIdAndTypeId(Pageable pageable, Long userId, LikeTypeEnum likeTypeEnum){
+        QLike qLike = QLike.like;
+
+        List<Like> likes = jqf.selectFrom(qLike)
+                .where(qLike.user.id.eq(userId).and(qLike.type.eq(likeTypeEnum)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPQLQuery<Like> count = jqf
+                .select(qLike)
+                .from(qLike)
+                .where(qLike.user.id.eq(userId).and(qLike.type.eq(likeTypeEnum)));
+
+        return PageableExecutionUtils.getPage(likes, pageable, count::fetchCount);
+    }
+
     public void delete(Like like){
         JPAQueryFactory jqf = new JPAQueryFactory(em);
         QLike qLike = QLike.like;

@@ -1,5 +1,8 @@
 package com.sparta.outsorcingproject.plustask;
 
+import com.sparta.outsorcingproject.dto.MenuResponseDto;
+import com.sparta.outsorcingproject.dto.ReviewResponseDto;
+import com.sparta.outsorcingproject.dto.StoreResponseDto;
 import com.sparta.outsorcingproject.entity.*;
 import com.sparta.outsorcingproject.repository.LikeRepository;
 import com.sparta.outsorcingproject.repository.OrdersRepository;
@@ -9,7 +12,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,7 +34,6 @@ public class LikeService {
 
     @Transactional
     public String createLike(LikeTypeEnum likeType, long typeId, User user) {
-
         if(likeType == LikeTypeEnum.Store) {
             Store store = storeRepository.findStoreById(typeId, messageSource);
 
@@ -75,6 +85,24 @@ public class LikeService {
             return "(리뷰) 좋아요 등록 완료!";
         }
 
-        return null;
+        return "오류 발생";
+    }
+
+    @Transactional
+    public Page<StoreResponseDto> readLikeStore(int pageNumber, User user) {
+        Pageable pageable = PageRequest.of(pageNumber, 5, Sort.by("createAt").ascending());
+
+        Page<Like> likes = likeDslRepository.findAllByUserIdAndTypeId(pageable,user.getId(), LikeTypeEnum.Store);
+
+        return likes.map(like -> new StoreResponseDto(like.getStore()));
+    }
+
+    public Page<ReviewResponseDto> readLikeReview(int pageNumber, User user) {
+        Pageable pageable = PageRequest.of(pageNumber, 5, Sort.by("createAt").ascending());
+
+        //List<Like> likes = likeDslRepository.findAllByUserIdAndTypeId(pageableuser.getId(), LikeTypeEnum.Review);
+        Page<Like> likes = likeDslRepository.findAllByUserIdAndTypeId(pageable, user.getId(), LikeTypeEnum.Review);
+
+        return likes.map(like -> new ReviewResponseDto(like.getReview()));
     }
 }
